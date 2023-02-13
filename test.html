@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Spiel | Kabomm</title>
+</head>
+<body>
+    
+    <script type="module">
+    
+
+    // import kaboom lib
+    import kaboom from "https://unpkg.com/kaboom/dist/kaboom.mjs";
+
+    // initialize kaboom context
+    kaboom();
+
+    loadSprite("player", "player.png")
+    loadSprite("Button1", "Level1Buton.png")
+    // add something to screen
+    var lo = 0 
+    const MOVE_SPEED = 480
+    const jump = 700
+    scene("Level-1", () => {
+        const player = add([
+            sprite("player"),
+            pos(80, 40),
+            area(),
+            body(),
+        ])
+
+        //sprigen 
+        onKeyPress("space", () => {
+        if (player.isGrounded()) {
+            player.jump(jump);
+        }
+        })
+
+        onKeyPress("up", () => {
+        if (player.isGrounded()) {
+            player.jump(jump);
+        }
+        })
+
+        onKeyPress("w", () => {
+        if (player.isGrounded()) {
+            player.jump(jump);
+        }
+        })
+
+        onKeyDown("left", () => {
+            player.move(-MOVE_SPEED, 0)
+        })
+
+        onKeyDown("right", () => {
+            player.move(MOVE_SPEED, 0)
+        })
+
+        onKeyDown("d", () => {
+            player.move(MOVE_SPEED, 0)
+        })
+
+        onKeyDown("a", () => {
+            player.move(-MOVE_SPEED, 0)
+        })
+
+        onUpdate(() => {
+            add([
+                camPos(player.pos)
+            ])  
+        })
+        //boden
+        add([
+            rect(width(), 48),
+            pos(0, height() -48),
+            outline(4),
+            area(),
+            solid(),
+            color(127, 200, 255),
+        ])
+
+
+        //gegener
+        add([
+            rect(48, 64),
+            area(),
+            outline(4),
+            pos(width(), height() - 48),
+            origin("botleft"),
+            color(255, 180, 255),
+            move(LEFT, 240),
+        ]);
+    })
+    go("Level-1")
+    </script>
+</body>
+</html>
