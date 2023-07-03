@@ -1,3 +1,4 @@
+// wir arbeiten an ein punkte syteam da nach muss ein level update ran und wie brauen enden für beide level 
 <script type="module">
 
     // import kaboom lib
@@ -20,7 +21,11 @@
     //end neue
     //Map
     loadSprite("Map-Button1", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Level1Buton.png")
-    loadSprite("Map-Hintergrund", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/map.png")
+    loadSprite("Map-Hintergrund", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/neue-map.png")
+    loadSprite("rahmen", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/rahmen.png")
+    loadSprite("eins", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/eins.png")
+    loadSprite("zwei", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/zwei.png")
+    loadSprite("drei", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/drei.png")
     //Hause
     loadSprite("Hause1", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Haus(1).png")
     loadSprite("Hause2", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Haus(2).png")
@@ -55,6 +60,12 @@
             },
         },
     })
+    //menu
+    loadSprite("menu", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/menu.png")
+    loadSprite("play", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/play.png")
+    loadSprite("quit", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/quit.png")
+    loadSprite("pausbk", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/pausbk.png")
+
     //Objekte
     loadSprite("schild_sprung", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/schild.png")
     loadSprite("glas-au", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Glas.png")
@@ -124,12 +135,13 @@
     var sprite2 = 0
     volume(0.5)
     scene("map", () => {
-        camScale(1, 1)
+        camScale(0.4, 0.4)
 
 
         const background = add([
             sprite("Map-Hintergrund"),
             pos(0, 0),
+            z(1),
             scale(4),
         ]);       
 
@@ -138,26 +150,89 @@
             const btn = add([
                 sprite(sp),
                 pos(p),
+                z(2),
+                scale(6),
                 area({ cursor: "pointer", }),
             ])
 
             btn.onClick(f)
         }
-        
-        addlvButton("Map-Button1", vec2(1000, 600), () => go("Level-2"), )
+        addlvButton("eins", vec2(3150, 1000), () => go("Level-1"), )
+        addlvButton("zwei", vec2(1200, 900), () => go("Level-2"), )
 
+        //rahmen rahmen
+        const rahmen1 = add([
+            z(2),
+            sprite("rahmen"),
+            pos(0, -100),
+            scale(4),
+        ]);    
+        const rahmen2 = add([
+            z(2),
+            sprite("rahmen"),
+            pos(3550, -100),
+            scale(4),
+        ]);    
+        const rahmen3 = add([
+            z(2),
+            rotate(90),
+            sprite("rahmen"),
+            pos(2800, -200),
+            scale(4),
+        ]);    
+        const rahmen4 = add([
+            z(2),
+            rotate(90),
+            sprite("rahmen"),
+            pos(2800, 2500),
+            scale(4),
+        ]);    
+        const rahmen5 = add([
+            z(2),
+            rotate(90),
+            sprite("rahmen"),
+            pos(3750, -200),
+            scale(4),
+        ]);    
+        const rahmen6 = add([
+            z(2),
+            rotate(90),
+            sprite("rahmen"),
+            pos(3700, 2500),
+            scale(4),
+        ]);    
+        var mapspeed = 15
+        var mapx = 2150
+        var mapy = 1210
+
+        onKeyDown("left", () => {
+            mapx = mapx - mapspeed
+        })
+
+        onKeyDown("right", () => {
+            mapx = mapx + mapspeed
+        })
+
+        onKeyDown("down", () => {
+            mapy = mapy + mapspeed
+        })
+
+        onKeyDown("up", () => {
+            mapy = mapy - mapspeed
+        })
 
         background.onUpdate(() => {
-            if (isMouseDown() == true){
-                camPos(mousePos())
-            }
+            camPos(mapx, mapy)
+            console.log(mapx, mapy)
         })
     })
 
     scene("Level-1", () => {
+        
         const backgrounds = [
             [0, 172, 70],
         ]
+        var punkte = 0
         var Vogel_Timer = 0
         var eins = 1
         var lo = 0 
@@ -175,6 +250,56 @@
         var tx = 0 
         var ty = 0
         var ivar = 0
+        var pasue = 0 
+        onKeyPress("t", () => {
+            if (pasue == 0){
+                console.log("jajaj")
+                pasue = 1 
+                MOVE_SPEED = 0
+                jump = 0 
+                const pausbk = add([
+                    sprite("pausbk"),
+                    z("1000"),
+                    pos(player.pos.x - 500, player.pos.y - 500),
+                    "pasue",
+                ])
+                //buttons
+                //play
+                const play = add([
+                    sprite("play"),
+                    z("1001"),
+                    scale(3),
+                    body({ isStatic: true}),
+                    area(),
+                    pos(player.pos.x - 15, player.pos.y - 200),
+                    "pasue",
+                ])
+                //quit
+                const quit = add([
+                    sprite("quit"),
+                    z("1001"),
+                    area(),
+                    body({ isStatic: true}),
+                    scale(3),
+                    pos(player.pos.x - 15 , player.pos.y - 50 ),
+                    "pasue",
+                ])
+                play.onClick(() => {
+                    pasue = 0
+                    console.log("neineijn")
+                    MOVE_SPEED = 480
+                    jump = 600 
+                    destroy(pausbk)
+                    destroy(quit)
+                    destroy(play)
+                })
+
+                quit.onClick(() => {
+                    go("map")
+                })  
+            }
+        })
+        // .clicks() is provided by area() component, it registers an event that runs when the object is clicked
 
         const music = play("Level-1", {
             loop: true,
@@ -462,6 +587,7 @@
                 scale(1),
                 z(101),
             ])
+            
             polizei_a.play("recht")
             player.play("idle")
 
@@ -470,6 +596,7 @@
             player.onCollide("glas-au", () => {
                 go("map")
             })  
+            
         // onUpdate
             player.onUpdate(() => {        
                 //colid
@@ -477,8 +604,8 @@
                     go("map")
                 } 
                 // bot camera to player
-                if(eins = 1){
-                //polizei_a.move(400, 0)
+                if(pasue == 0){
+                polizei_a.move(400, 0)
                 }
                 
                 if (player.pos.x < polizei_a.pos.x + 200) {
@@ -501,12 +628,41 @@
                 if (!player.isGrounded()) {
                     player.play("jump")
                 } 
-                
+                pausbk2.pos.x = player.pos.x - 500
+                pausbk2.pos.y = player.pos.y - 400
+                timer.pos.y = player.pos.y  
+                timer.pos.x = player.pos.x  
 
+            })  
+            const pausbk2 = add([
+                sprite("pausbk"),
+                scale(0.1),
+                z("1009"),
+                pos(player.pos.x - 500, player.pos.y - 400),
+                "pasue",
+            ])
+
+           
+
+
+
+            const timer = add([
+                text(0),
+                pos(player.pos.x - 500, player.pos.y - 400),
+                fixed(),
+                { time: 0 },
+                z(1010),
+                scale(3),
+            ])
+
+            timer.onUpdate(() => {
+                timer.time = punkte
+            })
+            //punkte 
+            loop(0.1, () => {
+                punkte = punkte + 1
 
             })
-
-
             //Vogel
             Vogel_Timer = rand(10, 20)
                 loop(Vogel_Timer, () => {
@@ -593,30 +749,33 @@
                 hx3 = hx3 + 600
             }
         // Input
-                onKeyPress("t", () => {
-                    go("map");
-                })
-            //Jump
                 onKeyPress("space", () => {
-                    if (player.isGrounded()) {     
+                    if(pasue == 0){
+                        if (player.isGrounded()) {     
 
-                        player.jump(jump);
-                        camPos(player.pos.x, player.pos.y - 80)
+                            player.jump(jump);
+                            camPos(player.pos.x, player.pos.y - 80)
+                        }
                     }
                 })
                 onKeyPress("up", () => {
-                    if (player.isGrounded()) {                
-                        player.jump(jump);
-                        camPos(player.pos.x, player.pos.y - 80)
+                    if(pasue == 0){
+                        if (player.isGrounded()) {                
+                            player.jump(jump);
+                            camPos(player.pos.x, player.pos.y - 80)
 
+                        }
                     }
                 })
                 onKeyPress("w", () => {
-                    if (player.isGrounded()) {                
-                        player.jump(jump);
-                        camPos(player.pos.x, player.pos.y - 80)
+                    if(pasue == 0){
+                        if (player.isGrounded()) {                
+                            player.jump(jump);
+                            camPos(player.pos.x, player.pos.y - 80)
+                        }
                     }
-                })              
+                })  
+                     
             //Links
                 onKeyDown("a", () => {
                     player.move(-MOVE_SPEED, 0)
@@ -641,7 +800,8 @@
     })
     
     scene("Level-2", () => {
-        xx = 0 
+        c = 2
+        xx =  0 
         sprite2 = 0 
         var ballconter = 500  
         //backround loder 
@@ -667,6 +827,11 @@
         player.onCollide("ball1", () => {
             go("map")
         }) 
+        player.onCollide("Sprungbret", () => {
+            console.log("jo");
+            player.jump(900);
+        })
+
         //on update 
         player.onUpdate(() => {        
                 //colid
@@ -674,7 +839,7 @@
                     camPos(player.pos.x, 260)
                 }
 
-
+        
                 if (player.isGrounded() && !isKeyDown("left") && !isKeyDown("right")&& !isKeyDown("a") && !isKeyDown("d")) {
                     player.play("idle")
                 }
@@ -686,34 +851,33 @@
                 if (player.isGrounded() && !isKeyDown("left") && !isKeyDown("right")&& !isKeyDown("a") && !isKeyDown("d")) {
                         player.play("idle")
                 }
-                
-                if (!player.isGrounded()) {
-                    player.play("jump")
-                } 
-
             })
-        for (let i = 0; i < 16; i++) {
+            var ren = rand(8, 16)
+        // bock / sprugbret
+        for (let i = 0; i < ren; i++) {
+            var c2 = c +2
             const Bock = add([
-                sprite("Bock "),
-                pos(1 + c * 100, 100),
+                sprite("Bock"),
+                pos(c2 * 100, 400),
                 area(),
                 body({ isStatic: true }),
-                offscreen({ hide: true }),
-                scale(3),
+                scale(1),
                 z(50),
             ])
 
             const Sprungbret = add([
                 sprite("Sprungbret"),
-                pos(c * 100, 100),
+                pos(c * 100, 480),
                 area(),
                 scale(1),
-                body(),
+                body({ isStatic: true}),
                 z(100),
+                "Sprungbret",
             ])
 
             c = c + 5        
         }
+        //bk gen 
         for (let i = 0; i < 20; i++) {
                 add([
                     sprite("level2bk"),
@@ -732,7 +896,6 @@
                 xx = xx + 400 
         }
         wait(2, () => {
-        
             loop(3, () => {
                 yyy = rand(480, 450)
                 sprite2 = rand(1, 3)
@@ -840,7 +1003,7 @@
 
 
     })
-    go("Level-2");
+    go("map");
     </script>
 </body>
 </html>
