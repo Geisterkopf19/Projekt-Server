@@ -1,4 +1,3 @@
-// wir arbeiten an ein punkte syteam da nach muss ein level update ran und wie brauen enden für beide level 
 <script type="module">
 
     // import kaboom lib
@@ -47,7 +46,8 @@
     //Himmel
     loadSprite("Wolken", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/wolke.png")
     loadSprite("Himmel", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/bk.png")
-    //
+    //schule
+    loadSprite("Schule", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/schule.png")
     //Vogel
     loadSprite("Vogel", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Vogel.png", {
         sliceX: 7,
@@ -69,18 +69,35 @@
     //Objekte
     loadSprite("schild_sprung", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/schild.png")
     loadSprite("glas-au", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Glas.png")
+    loadSprite("car1", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/car1.png")
+    loadSprite("car2", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/car2.png")
+    loadSprite("reifen", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/reifen.png")
+    loadSprite("steine", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/steine.png")
     //mull
     loadSprite("Restmull", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Restm%C3%BCll-Tonne.png")
     loadSprite("Wertstoffe", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Wertstoffe-Tonne.png")
     loadSprite("Restmull2", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Resam%C3%BClltone.png")
     loadSprite("Papier-mull", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Papierm%C3%BClltone.png")
+    //Sport
+    loadSprite("midi", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/midi-neue.png", {
+        sliceX: 6,
+        anims: {
+            "spin": { 
+                from: 0,
+                to: 5,
+                speed: 5,
+                loop: true,
+            },
+        },
+    })
+    loadSprite("wand", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/wand.png")
     //Music
     loadSound("Level-1", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Music/Level-1.mp3")        
     loadSound("Level-2", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Music/Level-2.mp3")        
     loadSound("Lobby-1", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Music/Lobby-1.mp3")        
     loadSound("Lobby-2", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Music/Lobby-2.mp3")        
     loadSound("Bahnhof", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/Music/Bahnhof.mp3")        
-    loadSprite("player", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/all2.png", {
+    loadSprite("player", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/player.png", {
         sliceX: 10,
         anims: {
             "run": { 
@@ -106,11 +123,15 @@
             loadSprite("1", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/LV%202%20Tennis%20Tall.png")
             loadSprite("2", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/LV%202%20Rugby%20ball.png")
             loadSprite("3", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/LV%202%20Basketball.png")
-
+    //boden
+    loadSprite("bodenbig", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/bodenbig.png")
+    loadSprite("bodensmall", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/bodensmall.png")
+    loadSprite("halder", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/halder.png")
     //sprunge 
     loadSprite("Sprungbret", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/LV%202%20Sprungbret.png")
     loadSprite("Bock", "https://raw.githubusercontent.com/Geisterkopf19/Projekt-Server/main/LV%202%20Bock.png")
     var xx = 0
+    var stop = false
     var Vogel_Timer = 0
     var eins = 1
     var lo = 0 
@@ -129,6 +150,7 @@
     var tx = 0 
     var ty = 0
     var ivar = 0
+    var los = false
     var xxx = 0
     var yyy = 0
     var c = 0 
@@ -237,11 +259,12 @@
         var eins = 1
         var lo = 0 
         var leben = 1 
-        var MOVE_SPEED = 480
+        var MOVE_SPEED = 4800 //480
         var vogel_da = false
         var yend =  1300
         var jump = 600
         var grav = 1700
+        var win = false
         var newcamhigt = 0
         var hx1 = 0 
         var hx2 = 100
@@ -305,11 +328,11 @@
             loop: true,
         })
         
-        camScale(1.3, 1.3)
+        camScale(0.8, 0.8)
         setGravity(grav)
         const player = add([
             sprite("player"),
-            pos(840, 54),
+            pos(840, -54),
             area(),
             scale(1),
             body(),
@@ -318,13 +341,8 @@
 
 
             //Polizei //
-            const auto = add([
-                sprite("auto"),
-                pos(0, 130),
-                area(), 
-                scale(1.3),
-                z(103),
-            ])
+
+
             const polizei_a = add([
                 sprite("polizei_a"),
                 pos(0, 130),
@@ -343,7 +361,7 @@
             ])
             add([
                 sprite("glas-au"),
-                pos(2400, 200),
+                pos(2200, 200),
                 scale(1),
                 z(101),
                 area(),
@@ -351,7 +369,7 @@
             ])
             add([
                 sprite("glas-au"),
-                pos(6300, 200),
+                pos(2000, 200),
                 scale(1),
                 z(101),
                 area(),
@@ -359,31 +377,7 @@
             ])
             add([
                 sprite("glas-au"),
-                pos(4000, 200),
-                scale(1),
-                z(101),
-                area(),
-                "glas-au",
-            ])
-            add([
-                sprite("glas-au"),
-                pos(4900, 200),
-                scale(1),
-                z(101),
-                area(),
-                "glas-au",
-            ])
-            add([
-                sprite("glas-au"),
-                pos(7400, 200),
-                scale(1),
-                z(101),
-                area(),
-                "glas-au",
-            ])
-            add([
-                sprite("glas-au"),
-                pos(7900, 200),
+                pos(2100, 200),
                 scale(1),
                 z(101),
                 area(),
@@ -401,7 +395,7 @@
             const straße2 = add([ 
                 sprite("Straße"),
                 area(),
-                pos(6000, 200),
+                pos(3000, 200),
                 scale(2),
                 body({ isStatic: true }),    
                 "straße2",
@@ -410,7 +404,7 @@
             const straße3 = add([ 
                 sprite("Straße"),
                 area(),
-                pos(3000, 200),
+                pos(10200, 200),
                 scale(2),
                 body({ isStatic: true }),    
                 "straße2",
@@ -419,7 +413,16 @@
             const straße4 = add([ 
                 sprite("Straße"),
                 area(),
-                pos(4500, 200),
+                pos(8400, 200),
+                scale(2),
+                body({ isStatic: true }),    
+                "straße2",
+                z(99),
+            ])
+            const straße5 = add([ 
+                sprite("Straße"),
+                area(),
+                pos(6200, 200),
                 scale(2),
                 body({ isStatic: true }),    
                 "straße2",
@@ -461,7 +464,7 @@
             ])
             add([
                 sprite("Wertstoffe"),
-                pos(1800, 80),
+                pos(1800, 100),
                 area(),
                 body({ isStatic: true }),
                 offscreen({ hide: true }),
@@ -493,14 +496,49 @@
                 "Hause3",
                 z(96),
             ])
-            add([
-                sprite("Papier-mull"),
-                pos(2100, 100),
+            const auto1 = add([
+                sprite("car1"),
                 area(),
                 body({ isStatic: true }),
                 offscreen({ hide: true }),
+                pos(3150, 120),
+                scale(6),
+                "auto1",
+                z(210),
+            ])
+            add([
+                sprite("glas-au"),
+                pos(3650, 200),
                 scale(1),
                 z(101),
+                area(),
+                "glas-au",
+            ])
+            add([
+                sprite("glas-au"),
+                pos(3500, 200),
+                scale(1),
+                z(101),
+                area(),
+                "glas-au",
+            ])
+            const auto2 = add([
+                sprite("car2"),
+                area(),
+                body({ isStatic: true }),
+                offscreen({ hide: true }),
+                pos(3750, 120),
+                scale(6),
+                "auto1",
+                z(210),
+            ])
+            const reifen = add([
+                sprite("reifen"),
+                pos(2300, 160),
+                area(), 
+                scale(2.5),
+                z(103),
+                "reifen",
             ])
             const Hause4 = add([
                 sprite("Hause4"),
@@ -518,14 +556,78 @@
                 "Hause5",
                 z(95),
             ])
-            add([
-                sprite("Papier-mull"),
-                pos(4250, 100),
-                area(),
-                body({ isStatic: true }),
-                offscreen({ hide: true }),
-                scale(1),
-                z(101),
+
+            const reifen2 = add([
+                sprite("reifen"),
+                pos(4200, 160),
+                area(), 
+                scale(2.5),
+                z(103),
+                "reifen",
+            ])    
+            const steine1 = add([
+                sprite("steine"),
+                pos(4500, 160),
+                area(), 
+                scale(2.2),
+                z(103),
+                "glas-au",
+            ])          
+            const reifen3 = add([
+                sprite("reifen"),
+                pos(4800, 160),
+                area(), 
+                scale(2.5),
+                z(103),
+                "reifen",
+            ])    
+            const stein2 = add([
+                sprite("steine"),
+                pos(5100, 160),
+                area(), 
+                scale(2.2),
+                z(103),
+                "glas-au",
+            ])              
+            const reifen4 = add([
+                sprite("reifen"),
+                pos(5400, 160),
+                area(), 
+                scale(2.5),
+                z(103),
+                "reifen",
+            ])
+            const stein3 = add([
+                sprite("steine"),
+                pos(5700, 160),
+                area(), 
+                scale(2.2),
+                z(103),
+                "glas-au",
+            ])
+            const reifen5 = add([
+                sprite("reifen"),
+                pos(6000, 160),
+                area(), 
+                scale(2.5),
+                z(103),
+                "reifen",
+            ])
+            const stein4 = add([
+                sprite("steine"),
+                pos(6300, 160),
+                area(), 
+                scale(2.2),
+                z(103),
+                "glas-au",
+            ])       
+            const reifen6 = add([
+                sprite("reifen"),
+                pos(6600, 160),
+                area(), 
+                scale(2.5),
+                z(103),
+                "reifen",
             ])
             const Hause6 = add([
                 sprite("Hause6"),
@@ -535,15 +637,6 @@
                 "Hause6",
                 z(95),
             ])
-            add([
-                sprite("Papier-mull"),
-                pos(5800, 100),
-                area(),
-                body({ isStatic: true }),
-                offscreen({ hide: true }),
-                scale(1),
-                z(101),
-            ])
             const Hause7 = add([
                 sprite("Hause7"),
                 area(),
@@ -552,26 +645,25 @@
                 "Hause7",
                 z(95),
             ])
-            add([
-                sprite("Papier-mull"),
-                pos(6800, 100),
-                area(),
-                body({ isStatic: true }),
-                offscreen({ hide: true }),
-                scale(1),
-                z(101),
-            ])
             const Hause8 = add([
                 sprite("Hause8"),
                 area(),
-                pos(7900, -125),
-                scale(3),                
+                pos(8100, -110),
+                scale(6),     
+                "Hause8",
+                z(95),
+            ])           
+            const Schule = add([
+                sprite("Schule"),
+                area(),
+                pos(10900, -350),
+                scale(3.5),     
                 "Hause8",
                 z(95),
             ])
             const Wertstoffe = add([
                 sprite("Wertstoffe"),
-                pos(3000, 100),
+                pos(2900, 100),
                 area(),
                 body({ isStatic: true }),
                 offscreen({ hide: true }),
@@ -580,7 +672,7 @@
             ])
             const Restmull = add([
                 sprite("Restmull"),
-                pos(2800, 100),
+                pos(2700, 100),
                 area(),
                 body({ isStatic: true }),
                 offscreen({ hide: true }),
@@ -588,6 +680,29 @@
                 z(101),
             ])
             
+            for (let i = 0; i < 4; i++) {
+                var neutei = i * 400
+                add([
+                    sprite("Papier-mull"),
+                    pos(6800 + neutei, 80),
+                    area(),
+                    body({ isStatic: true }),
+                    offscreen({ hide: true }),
+                    scale(1),
+                    z(101),
+                ])
+                var neutei2 = neutei - 200
+                add([
+                    sprite("glas-au"),
+                    pos(6800 + neutei2 , 200),
+                    scale(1),
+                    z(100),
+                    area(),
+                    "glas-au",
+                ])
+            }            
+
+           
             polizei_a.play("recht")
             player.play("idle")
 
@@ -605,19 +720,58 @@
                 } 
                 // bot camera to player
                 if(pasue == 0){
-                polizei_a.move(400, 0)
+                //polizei_a.move(400, 0)
                 }
                 
                 if (player.pos.x < polizei_a.pos.x + 200) {
                     go("map")
+                }
+                console.log(win)
+                if (player.pos.x > 11200) {
+                        win = true
+                        pasue = 1
+                        grav = 0 
+                        setGravity(grav)
+                        var punkte2 = punkte
+                        player.moveTo(player.pos.x - 500, player.pos.y - 600)
+                        camPos(player.pos.x - 500, player.pos.y + 1000 )
+                        const jjjjo = add([
+                            text("Du hast  " + punkte2 * 0.5 + " sekunden gebraucht. "),
+                            pos(player.pos.x - 490, player.pos.y + 1000),
+                            z(1010),
+                            scale(1),
+                        ])
+
+                        const quit = add([
+                            sprite("quit"),
+                            z("1001"),
+                            area(),
+                            body({ isStatic: true}),
+                            scale(3),
+                            pos(player.pos.x - 500  , player.pos.y + 1100 ),
+                            "pasue",0
+                        ])
+                        quit.onClick(() => {
+                            go("map")
+                        })  
+                }
+                if (win == true) {
+                    camPos(player.pos.x - 500, player.pos.y + 1000 )
+
                 }
 
                 if (player.pos.y > yend) {
                     go("map")
                     
                 }
-                if (!player.isGrounded()) {                
+                if (!player.isGrounded()) {   
+                    if (win == false){             
                     camPos(player.pos.x, player.pos.y - 80)
+                        pausbk2.pos.x = player.pos.x - 500
+                        pausbk2.pos.y = player.pos.y - 400
+                        timer.pos.y = player.pos.y  - 290
+                        timer.pos.x = player.pos.x  - 490
+                    }
                 }
 
 
@@ -628,10 +782,7 @@
                 if (!player.isGrounded()) {
                     player.play("jump")
                 } 
-                pausbk2.pos.x = player.pos.x - 500
-                pausbk2.pos.y = player.pos.y - 400
-                timer.pos.y = player.pos.y  
-                timer.pos.x = player.pos.x  
+
 
             })  
             const pausbk2 = add([
@@ -642,26 +793,30 @@
                 "pasue",
             ])
 
-           
+            player.onCollide("reifen", () => {
+                console.log("jo");
+                player.jump(950);
+            })
 
 
 
             const timer = add([
                 text(0),
                 pos(player.pos.x - 500, player.pos.y - 400),
-                fixed(),
                 { time: 0 },
                 z(1010),
-                scale(3),
+                scale(1),
             ])
 
-            timer.onUpdate(() => {
-                timer.time = punkte
-            })
+
             //punkte 
             loop(0.1, () => {
-                punkte = punkte + 1
-
+                console.log(pasue)
+                if (pasue == 0) {
+                    punkte = punkte + 1
+                    timer.time = punkte
+                    timer.text = timer.time
+                }
             })
             //Vogel
             Vogel_Timer = rand(10, 20)
@@ -752,9 +907,13 @@
                 onKeyPress("space", () => {
                     if(pasue == 0){
                         if (player.isGrounded()) {     
-
+                            
                             player.jump(jump);
                             camPos(player.pos.x, player.pos.y - 80)
+                            pausbk2.pos.x = player.pos.x - 500
+                    pausbk2.pos.y = player.pos.y - 400
+                    timer.pos.y = player.pos.y  - 290
+                    timer.pos.x = player.pos.x  - 490
                         }
                     }
                 })
@@ -763,7 +922,10 @@
                         if (player.isGrounded()) {                
                             player.jump(jump);
                             camPos(player.pos.x, player.pos.y - 80)
-
+                            pausbk2.pos.x = player.pos.x - 500
+                    pausbk2.pos.y = player.pos.y - 400
+                    timer.pos.y = player.pos.y  - 290
+                    timer.pos.x = player.pos.x  - 490
                         }
                     }
                 })
@@ -772,28 +934,46 @@
                         if (player.isGrounded()) {                
                             player.jump(jump);
                             camPos(player.pos.x, player.pos.y - 80)
+                            pausbk2.pos.x = player.pos.x - 500
+                    pausbk2.pos.y = player.pos.y - 400
+                    timer.pos.y = player.pos.y  - 290
+                    timer.pos.x = player.pos.x  - 490
                         }
                     }
                 })  
                      
             //Links
                 onKeyDown("a", () => {
-                    player.move(-MOVE_SPEED, 0)
-                    camPos(player.pos.x, player.pos.y - 80)
-                    player.flipX = true
-                    //Animation
-                    if (player.isGrounded() && player.curAnim() !== "run") {
-                        player.play("run")
-                    }
+                    if (win == false){             
+
+                            player.move(-MOVE_SPEED, 0)
+                            camPos(player.pos.x, player.pos.y - 80)
+                            pausbk2.pos.x = player.pos.x - 500
+                            pausbk2.pos.y = player.pos.y - 400
+                            timer.pos.y = player.pos.y  - 290
+                            timer.pos.x = player.pos.x  - 490
+                            player.flipX = true
+                            //Animation
+                            if (player.isGrounded() && player.curAnim() !== "run") {
+                                player.play("run")
+                            }
+                    } 
                 })
             //Rechts
                 onKeyDown("d", () => {
-                    player.move(MOVE_SPEED, 0)
-                    camPos(player.pos.x, player.pos.y - 80)
-                    player.flipX = false
-                    //Animation
-                    if (player.isGrounded() && player.curAnim() !== "run") {
-                        player.play("run")
+                    if (win == false){             
+
+                        player.move(MOVE_SPEED, 0)
+                        camPos(player.pos.x, player.pos.y - 80)
+                        pausbk2.pos.x = player.pos.x - 500
+                        pausbk2.pos.y = player.pos.y - 400
+                        timer.pos.y = player.pos.y  - 290
+                        timer.pos.x = player.pos.x  - 490
+                        player.flipX = false
+                        //Animation
+                        if (player.isGrounded() && player.curAnim() !== "run") {
+                            player.play("run")
+                        }
                     }
                 })
 
@@ -802,8 +982,61 @@
     scene("Level-2", () => {
         c = 2
         xx =  0 
+        var tuhe = false
+        var los = false
+        jump = 700 
+        MOVE_SPEED = 4800
         sprite2 = 0 
         var ballconter = 500  
+        var pasue = 0 
+        onKeyPress("t", () => {
+            if (pasue == 0){
+                console.log("jajaj")
+                pasue = 1 
+                MOVE_SPEED = 0
+                jump = 0 
+                const pausbk = add([
+                    sprite("pausbk"),
+                    z("1000"),
+                    pos(player.pos.x - 500, player.pos.y - 500),
+                    "pasue",
+                ])
+                //buttons
+                //play
+                const play = add([
+                    sprite("play"),
+                    z("1001"),
+                    scale(3),
+                    body({ isStatic: true}),
+                    area(),
+                    pos(player.pos.x, 200),
+                    "pasue",
+                ])
+                //quit
+                const quit = add([
+                    sprite("quit"),
+                    z("1001"),
+                    area(),
+                    body({ isStatic: true}),
+                    scale(3),
+                    pos(player.pos.x, 360 ),
+                    "pasue",
+                ])
+                play.onClick(() => {
+                    pasue = 0
+                    console.log("neineijn")
+                    MOVE_SPEED = 480
+                    jump = 700 
+                    destroy(pausbk)
+                    destroy(quit)
+                    destroy(play)
+                })
+
+                quit.onClick(() => {
+                    go("map")
+                })  
+            }
+        })
         //backround loder 
         camScale(1, 1)
         setGravity(grav)
@@ -826,15 +1059,41 @@
         }) 
         player.onCollide("ball1", () => {
             go("map")
-        }) 
+        })
+        player.onCollide("wand", () => {
+            stop = true
+        })  
         player.onCollide("Sprungbret", () => {
             console.log("jo");
             player.jump(900);
         })
+        player.onCollide("Sprungbret2", () => {
+            console.log("jo");
+            player.jump(900);
+        })
+            const Bock = add([
+                sprite("Bock"),
+                pos(3300, 400),
+                area(),
+                body({ isStatic: true }),
+                scale(1),
+                z(50),
+            ])
 
+            const Bock2 = add([
+                sprite("Bock"),
+                pos(3300, 300),
+                area(),
+                body({ isStatic: true }),
+                scale(1), // 3200
+                z(50),
+            ])
         //on update 
         player.onUpdate(() => {        
                 //colid
+                if (los == true){
+                midi.move(MOVE_SPEED * 0.6, 0) 
+                }
                 if (!player.isGrounded()) {                
                     camPos(player.pos.x, 260)
                 }
@@ -852,33 +1111,49 @@
                         player.play("idle")
                 }
             })
-            var ren = rand(8, 16)
         // bock / sprugbret
-        for (let i = 0; i < ren; i++) {
-            var c2 = c +2
+        var bock = 1
+        for (let i = 0; i < 8; i++) {
             const Bock = add([
                 sprite("Bock"),
-                pos(c2 * 100, 400),
+                pos(400 * bock, 400),
                 area(),
                 body({ isStatic: true }),
                 scale(1),
                 z(50),
             ])
 
+            const Bock2 = add([
+                sprite("Bock"),
+                pos(400 * bock, 300),
+                area(),
+                body({ isStatic: true }),
+                scale(1), // 3200
+                z(50),
+            ])
+             bock = bock + 1
+        }
             const Sprungbret = add([
                 sprite("Sprungbret"),
-                pos(c * 100, 480),
+                pos(260, 480),
                 area(),
                 scale(1),
                 body({ isStatic: true}),
                 z(100),
                 "Sprungbret",
+            ]) 
+            const wand  = add([
+                sprite("wand"),
+                pos(3500, 300),
+                area(),
+                scale(2),
+                body({ isStatic: true}),
+                z(100),
+                "wand",
             ])
 
-            c = c + 5        
-        }
         //bk gen 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 40; i++) {
                 add([
                     sprite("level2bk"),
                     scale(4),
@@ -897,71 +1172,69 @@
         }
         wait(2, () => {
             loop(3, () => {
-                yyy = rand(480, 450)
-                sprite2 = rand(1, 3)
-                var sprite2 = Math.round(sprite2);
-                xxx = player.pos.x + 700 
+                if (stop == false) {
+                    yyy = rand(480, 450)
+                    sprite2 = rand(1, 3)
+                    var sprite2 = Math.round(sprite2);
+                    xxx = player.pos.x + 700 
 
-                    if(sprite2 == 1) {
-                        const ball3 = add([
-                            sprite("1"),
-                            scale(1),
-                            z(3),
-                            pos(xxx, yyy),
-                            "ball3",
-                            move(LEFT, ballconter),
-                            area(),
+                        if(sprite2 == 1) {
+                            const ball3 = add([
+                                sprite("1"),
+                                scale(1),
+                                z(3),
+                                pos(xxx, yyy),
+                                "ball3",
+                                move(LEFT, ballconter),
+                                area(),
+                                ballconter = ballconter + 5
+                            ])
+                            wait(4, () => {
+                                destroy(ball3)
+                            })
+                        }
+
+                        if(sprite2 == 2) {
+                            const ball2 = add([
+                                sprite("2"),
+                                area(),
+                                scale(1),
+                                z(3),
+                                pos(xxx, yyy),
+                                "ball2",
+                                move(LEFT, 800),
+                            ])
+                            wait(4, () => {
+                                destroy(ball2)
+                            })
+
                             ballconter = ballconter + 5
-                        ])
-                        wait(4, () => {
-                            destroy(ball3)
-                        })
-                    }
 
-                    if(sprite2 == 2) {
-                        const ball2 = add([
-                            sprite("2"),
-                            area(),
-                            scale(1),
-                            z(3),
-                            pos(xxx, yyy),
-                            "ball2",
-                            move(LEFT, 800),
-                        ])
-                        wait(4, () => {
-                            destroy(ball2)
-                        })
+                        }
+                        if(sprite2 == 3) {
+                            const ball1 = add([
+                                sprite("3"),
+                                area(),
+                                scale(1),
+                                z(3),
+                                pos(xxx, yyy),
+                                "ball1",
+                                move(LEFT, 800),
+                            ])
+                            wait(4, () => {
+                                destroy(ball1)
+                            })
 
-                        ballconter = ballconter + 5
-
-                    }
-
-                    if(sprite2 == 3) {
-                        const ball1 = add([
-                            sprite("3"),
-                            area(),
-                            scale(1),
-                            z(3),
-                            pos(xxx, yyy),
-                            "ball1",
-                            move(LEFT, 800),
-                        ])
-                        wait(4, () => {
-                            destroy(ball1)
-                        })
-
-                        ballconter = ballconter + 5
-                    }
+                            ballconter = ballconter + 5
+                        }
+                }
 
 
 
-                })
+            })
         })
 
         // Input
-            onKeyPress("t", () => {
-                go("map");
-            })
             //Jump
                 onKeyPress("space", () => {
                     if (player.isGrounded()) {     
@@ -970,7 +1243,7 @@
                 })
                 onKeyPress("up", () => {
                     if (player.isGrounded()) {                
-                        player.jump(jump);
+                        player.jump(jump); 
                     }
                 })
                 onKeyPress("w", () => {
@@ -998,10 +1271,262 @@
                         player.play("run")
                     }
                 })
+                //input
+            const midi = add([
+                sprite("midi"),
+                pos(3800, 400),
+                area(),
+                body(),
+                scale(3),
+                z(50),
+                "midi",
+            ])
+            
+            player.onCollide("midi", (e, col) => {
+                // if it's not from the top, die
+                if (!col.isBottom()) {
+                    go("map")
+                }
+                    los = true
+                    midi.play("spin")
+            })
 
-              
+            const halder = add([
+                sprite("halder"),
+                pos(4300, 250),
+                scale(3),
+                z(49),
+                
+            ])
 
+            const bigboden = add([
+                sprite("bodenbig"),
+                pos(4200, 240),
+                area(),
+                body( { isStatic: true}),
+                scale(3),
+                z(50),
+            ])
+            var hallo = 0
 
+            for (let i = 0; i < 6; i++) {
+                
+                hallo = hallo + 600
+                
+                const halder2 = add([
+                    sprite("halder"),
+                    pos(5000 + hallo, 250),
+                    scale(3),
+                    z(49),
+                    
+                ])
+
+                const bigboden2 = add([
+                    sprite("bodenbig"),
+                    pos(4900 + hallo, 240),
+                    area(),
+                    body( { isStatic: true}),
+                    scale(3),
+                    z(50),
+                ])
+            }
+
+            for (let i = 0; i < 12; i++) {
+                
+                hallo = hallo + 270
+                
+                const halder2 = add([
+                    sprite("halder"),
+                    pos(5500 + hallo, 250),
+                    scale(3),
+                    z(49),
+                    
+                ])
+
+                const smallboden2 = add([
+                    sprite("bodensmall"),
+                    pos(5490 + hallo, 240),
+                    area(),
+                    body( { isStatic: true}),
+                    scale(3),
+                    z(50),
+                ])
+            }
+            for (let i = 0; i < 3; i++) {
+                
+                
+            const halder2 = add([
+                sprite("halder"),
+                pos(13500, 300 * i),
+                scale(3),
+                area(),
+                body( { isStatic: true } ),
+                z(49),                   
+            ])       
+            }
+            const halder5 = add([
+                sprite("halder"),
+                pos(13800, 0),
+                scale(3),
+                area(),
+                body( { isStatic: true } ),
+                z(49),                   
+            ])
+            const halder6 = add([
+                sprite("halder"),
+                pos(14100, 100),
+                scale(3),
+                area(),
+                body( { isStatic: true } ),
+                z(49),                   
+            ])
+            const halder7 = add([
+                sprite("halder"),
+                pos(14100, 300),
+                scale(3),
+                area(),
+                body( { isStatic: true } ),
+                z(49),                   
+            ])
+            const halder8 = add([
+                sprite("halder"),
+                pos(14025, 300),
+                scale(3),
+                area(),
+                body( { isStatic: true } ),
+                z(49),                   
+            ])
+            const halder9 = add([
+                sprite("halder"),
+                pos(13980, 300),
+                scale(3),
+                area(),
+                body( { isStatic: true } ),
+                z(49),                   
+            ])
+            midi.onCollide("Sprungbret2", (e, col) => {
+                // if it's not from the top, die
+                destroy(midi)
+            })
+
+            const halder3 = add([
+                sprite("halder"),
+                pos(13200, 0),
+                scale(3),
+                z(49),    
+                area(),
+                body( { isStatic: true } ),               
+            ])
+            const halder4 = add([
+                sprite("halder"),
+                pos(13200, 500),
+                scale(3),
+                area(),
+                body( { isStatic: true } ),
+                z(49),                   
+            ])
+            const Sprungbret2 = add([
+                sprite("Sprungbret"),
+                pos(13340, 400),
+                area(),
+                scale(2),
+                body(),
+                z(100),
+                "Sprungbret2",
+            ]) 
+            const Sprungbret3 = add([
+                sprite("Sprungbret"),
+                pos(13300, 100),
+                area(),
+                rotate(90),
+                scale(2),
+                z(100),
+                "Sprungbret2",
+            ]) 
+            const Sprungbret4 = add([
+                sprite("Sprungbret"),
+                pos(13800, 400),
+                area(),
+                scale(2),
+                body(),
+                z(100),
+                "Sprungbret2",
+            ])  
+            const Sprungbret5 = add([
+                sprite("Sprungbret"),
+                pos(13960, 270),
+                area(),
+                scale(1.5),
+                z(100),
+                "Sprungbret2",
+            ])
+    
+            //Boss Level:
+                var time = 10
+                var boss = false
+                //1500, 100
+            const timer = add([
+                text(0),
+                pos(15000, 100),
+                { timeer: 0 },
+                z(1010),
+                scale(3),
+            ])
+            //update 
+            player.onUpdate(() => {  
+                if(player.pos.x > 14500){
+                    if (wand2.pos.y == 300){
+                        boss = true
+                        console.log(boss)
+                    }else{
+                        wand2.moveTo(wand2.pos.x, 300) 
+                        time = 11
+                        timer.text = timer.timeer
+                    }
+                }
+                if (time == 0) {
+                    tuhe = true
+                }
+            })
+            //wände
+            const wand1 = add([
+                sprite("halder"),
+                pos(14400, 0),
+                scale(3),
+                area(),
+                body( { isStatic: true } ),
+                z(49),                   
+            ])
+            const wand2 = add([
+                sprite("halder"),
+                pos(14400, 0),
+                scale(3),
+                area(),
+                body( { isStatic: true } ),
+                z(49),                   
+            ])
+            const wand3 = add([
+                sprite("halder"),
+                pos(14400, -300),
+                scale(3),
+                area(),
+                body( { isStatic: true } ),
+                z(49),                   
+            ])
+            //punkte 
+            loop(1, () => {
+                console.log(pasue)
+                if (pasue == 0) {
+                    if(boss == true){
+                        time = time - 1
+                        timer.timeer = time
+                        timer.text = timer.timeer
+                    } 
+                }
+            })
+    
+    
+    
     })
     go("map");
     </script>
